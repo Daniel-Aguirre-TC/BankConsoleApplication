@@ -21,9 +21,10 @@ namespace BankEncapsulation
         public static void SelectUser()
         {
             ConsoleHandler.CenterMidScreenAndPrint(new string[] {
-            "Please enter your username below:", "",
+            "Login Page", "",
+            "Please enter your username below :", "",
             "Username : "
-            }, 33);
+            }, 34);
             string response = Console.ReadLine();
             BankAccount selectedAccount = InputHandler.CheckForUserName(response);
             if(selectedAccount == null)
@@ -41,12 +42,12 @@ namespace BankEncapsulation
             ConsoleHandler.CenterMidScreenAndPrint(new string[]{
             $"I'm sorry, we were unable to find a username for {responseThatDidntMatch}","",
             "Please select an option below:", "",
-            "1) Try a different username.  ",
+            "1) Try a different username   ",
             "2) Create a new account       ",
             ""
             }, 30);
             int selection = InputHandler.CheckInput(new string[] {
-                "Try a different username.  ",
+                "Try a different username   ",
                 "Create a new account       "
             });
             if(selection == 1)
@@ -73,11 +74,90 @@ namespace BankEncapsulation
         {
             ConsoleHandler.CenterMidScreenAndPrint(new string[] {
                 $"We have found your account.", "",
-                "Please enter your password below:", ""
+                "Please enter your password below:", "", ""
                 }, 33);
             // can adjust this to hide password as it's being entered later on?
             var password = Console.ReadLine();
             bool loginSuccessful = InputHandler.AttemptLogin(accountAccessing, password);
+        }
+
+
+        public static void AccessAccount(BankAccount accountToAccess)
+        {
+            ConsoleHandler.CenterMidScreenAndPrint(new string[]
+            {
+                $"You are currently viewing the account : {accountToAccess.Username}", "",
+                "What would you like to do today?", "",
+                "1) Check your balance              ",
+                "2) Deposit funds into your account ",
+                "3) Withdraw funds from your account",
+                "4) Exit account                    ",
+                ""
+            }, 36);
+            int selection = InputHandler.CheckInput(new string[] {
+                "Check your balance              ",
+                "Deposit funds into your account ",
+                "Withdraw funds from your account",
+                "Exit account                    "
+            });
+            if (selection == 1)
+            {
+                ConsoleHandler.CenterMidScreenAndPrint(new string[] {
+                    $"Your account balance is: {accountToAccess.GetBalance()}","",
+                    "Press any key to return to account options."
+                }, true);
+                ConsoleHandler.ClearAfterKeyPress();
+                AccessAccount(accountToAccess);
+            }
+            else if (selection == 2)
+            {
+                GetDepositAmount(accountToAccess);
+            }
+            else if (selection == 3)
+            {
+                accountToAccess.Withdraw();
+            }
+            else accountToAccess.CloseAccount();
+        }
+
+
+        public static void GetDepositAmount(BankAccount accountToAccess)
+        {
+            ConsoleHandler.CenterMidScreenAndPrint(new string[]
+                {
+                    "How much would you like to deposit today?", "",
+                    "Amount To Deposit : "
+                }, 41);
+            string input = Console.ReadLine();
+            double amountToDeposit = 0;
+            if (double.TryParse(input, out amountToDeposit))
+            {
+                if(amountToDeposit > 0)
+                {
+                    accountToAccess.Deposit(amountToDeposit);
+                }
+                else
+                {
+                    ConsoleHandler.CenterMidScreenAndPrint(new string[]{
+                    $"I'm sorry, {amountToDeposit} is not a valid amount.", "",
+                    "Please enter a number greater than 0.", "",
+                    "Press any key to return and enter a new amount."
+                    }, true);
+                    Console.ReadKey();
+                    GetDepositAmount(accountToAccess);
+                }
+            }
+            else
+            {
+                ConsoleHandler.CenterMidScreenAndPrint(new string[]
+                {
+                    $"I'm sorry, \"{input}\" is not a valid amount.", "",
+                    "Please enter a number greater than 0.", "",
+                    "Press any key to return and enter a new amount."
+                    }, true);
+                Console.ReadKey();
+                GetDepositAmount(accountToAccess);
+            }
         }
 
         public static void CreateNewAccount()
@@ -133,6 +213,14 @@ namespace BankEncapsulation
             if (InputHandler.YesOrNoQuestion(confirmPasswordString))
             {
                 AccountList.allAccounts.Add(new BankAccount(newUsername, password));
+                ConsoleHandler.CenterMidScreenAndPrint(new string[]
+                {
+                    "We have created your account!", "",
+                    $"You can now log in with the username : {newUsername}", "",
+                    "Press any key to return to the login page."
+                }, true);
+                ConsoleHandler.ClearAfterKeyPress();
+                SelectUser();
             }
             // if no, then go back to entering username by calling CreateNewAccount
             else CreateNewAccountPassword(newUsername);

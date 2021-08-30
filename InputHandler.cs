@@ -12,8 +12,7 @@ namespace BankEncapsulation
         {
             if (accountAccessing.OpenAccount(passwordEntered))
             { 
-                ConsoleHandler.CenterMidScreenAndPrint("You have logged into your account!");
-                ConsoleHandler.ClearAfterKeyPress();
+                RequestHandler.AccessAccount(accountAccessing);
                 return true;
             }
             else
@@ -38,8 +37,16 @@ namespace BankEncapsulation
                     return true;
                 case 'n':
                     return false;
-                default:                   
-                    return YesOrNoQuestion(new string[] { $"'{response}' is not a valid entry." + questionToDisplay});
+                default:
+                    List<string> invalidSelectionString = new List<string>()
+                    {
+                        $"'{response}' is not a valid entry.", ""
+                    };
+                    foreach (var message in questionToDisplay)
+                    {
+                        invalidSelectionString.Add(message);
+                    }
+                    return YesOrNoQuestion(invalidSelectionString.ToArray());
             }
         }
 
@@ -50,7 +57,7 @@ namespace BankEncapsulation
             for (int i = 0; i < possibleAnswers.Length; i++)
             {
                 string currentOptionNumber = (i + 1).ToString();
-                if(input == currentOptionNumber || input.ToLower() == possibleAnswers[i].ToLower())
+                if(input == currentOptionNumber || input.ToLower() == possibleAnswers[i].ToLower().TrimEnd())
                 {
                     return ++i;
                 }
@@ -85,6 +92,7 @@ namespace BankEncapsulation
             // if none returned one then return null
             return null;
         }
+
 
     }
 }
