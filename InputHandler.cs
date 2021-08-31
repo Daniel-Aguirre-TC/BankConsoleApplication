@@ -7,25 +7,53 @@ namespace BankEncapsulation
     public static class InputHandler
     {
        
-        
-        public static bool AttemptLogin(BankAccount accountAccessing, string passwordEntered)
+        // will return true or false depending on if the 
+        public static void AttemptLogin(BankAccount accountAccessing, string passwordEntered)
         {
-            if (accountAccessing.OpenAccount(passwordEntered))
-            { 
-                RequestHandler.AccessAccount(accountAccessing);
-                return true;
+            if (accountAccessing.LoginAttempts < 3)
+            {
+                if (accountAccessing.OpenAccount(passwordEntered))
+                {
+                    RequestHandler.AccessAccount(accountAccessing);
+                }
+                else
+                {
+                    ConsoleHandler.CenterMidScreenAndPrint(new string[] {
+                    "Incorrect Login Received",
+                    "Press any key to return and try again."
+                });
+                    ConsoleHandler.ClearAfterKeyPress();
+                    if (accountAccessing.LoginAttempts < 3)
+                    {
+                        RequestHandler.GetPassword(accountAccessing);
+                    }
+                    else
+                    {
+                        ConsoleHandler.CenterMidScreenAndPrint(new string[]
+                        {
+                        "Too many incorrect attempts.", "",
+                        "Your account has been locked.", "",
+                        "Press any key to return to the login page. "
+                        }, true);
+                        RequestHandler.SelectUser();
+                    }
+                }
             }
             else
             {
-                ConsoleHandler.CenterMidScreenAndPrint(new string[] { 
-                    "Incorrect Login Received", 
-                    "Try again?"
-                });
+                ConsoleHandler.CenterMidScreenAndPrint(new string[]
+                {
+                    "The account you are trying to access is locked.", "",
+                    "Please try accessing this account another time.", "",
+                    "You may contact support if you feel this is an error.", "",
+                    "Press any key to return to the login page. "
+                }, true);
                 ConsoleHandler.ClearAfterKeyPress();
-                return false;
+                RequestHandler.SelectUser();
             }
         }
 
+        // will return a bool
         public static bool YesOrNoQuestion(string[] questionToDisplay)
         {
             ConsoleHandler.CenterMidScreenAndPrint(questionToDisplay, true);

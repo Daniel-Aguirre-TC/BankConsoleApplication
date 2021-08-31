@@ -73,7 +73,7 @@ namespace BankEncapsulation
         public static void GetPassword(BankAccount accountAccessing)
         {
             ConsoleHandler.CenterMidScreenAndPrint(new string[] {
-                $"We have found your account.", "",
+                $"Account located for username : {accountAccessing.Username}", "",
                 "Please enter your password below:", "", ""
                 }, 33);
             // can adjust this to hide password as it's being entered later on?
