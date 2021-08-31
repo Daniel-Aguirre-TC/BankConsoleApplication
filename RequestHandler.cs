@@ -78,7 +78,7 @@ namespace BankEncapsulation
                 }, 33);
             // can adjust this to hide password as it's being entered later on?
             var password = Console.ReadLine();
-            bool loginSuccessful = InputHandler.AttemptLogin(accountAccessing, password);
+            InputHandler.AttemptLogin(accountAccessing, password);
         }
 
 
