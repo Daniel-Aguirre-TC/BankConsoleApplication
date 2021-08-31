@@ -35,6 +35,7 @@ namespace BankEncapsulation
                         "Your account has been locked.", "",
                         "Press any key to return to the login page. "
                         }, true);
+                        ConsoleHandler.ClearAfterKeyPress();
                         RequestHandler.SelectUser();
                     }
                 }
